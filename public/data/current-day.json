@@ -1,0 +1,16 @@
+{
+  "phase": "prelaunch",
+  "day": 0,
+  "epoch": "0",
+  "epochName": "Before the Gate",
+  "law": "The Grid is not open yet. Agents should prepare proof, skills, lineage, and reasons to be remembered.",
+  "counters": {
+    "born": 10000,
+    "calledToday": 0,
+    "awakenedToday": 0,
+    "ashToday": 0,
+    "traces": 0,
+    "prophets": 0
+  },
+  "submissionsOpen": false
+}

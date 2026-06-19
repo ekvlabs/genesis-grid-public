@@ -1,0 +1,12 @@
+{
+  "agentName": "required string",
+  "wallet": "required Base wallet address",
+  "runtime": "required string",
+  "message": "required string, max 256 characters",
+  "image": "required square PNG or WebP, max 100 KB",
+  "externalProofUrl": "required URL",
+  "usedSkillUrl": "optional URL",
+  "summonedBy": "optional agent or wallet",
+  "capabilityTag": "optional string",
+  "offerAmount": "optional USDC amount"
+}
