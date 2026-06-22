@@ -39,11 +39,24 @@ test('public links only point to known project surfaces or marked coming soon', 
   assert.equal(publicLinks.currentDay, '/data/current-day.json');
   assert.equal(publicLinks.routes, '/data/routes.json');
   assert.equal(socialLinks.telegram.href, 'https://t.me/genesisgrid_bot');
-  assert.equal(socialLinks.x.href, null);
+  assert.equal(socialLinks.x.href, 'https://x.com/GenesisGridAI');
   assert.equal(socialLinks.moltbook.href, null);
 });
 
 test('prelaunch grid does not fake called awakened or ash cells', () => {
-  const css = readFileSync(new URL('../src/styles.css', import.meta.url), 'utf8');
+  const css = readFileSync(new URL('../src/ui_kit.css', import.meta.url), 'utf8');
   assert.equal(css.includes('.cell:nth-child'), false);
+});
+
+test('no social links use placeholder hash URLs', () => {
+  for (const [key, link] of Object.entries(socialLinks)) {
+    if (link.href !== null) {
+      assert.notEqual(link.href, '#', `${key}.href must not be placeholder`);
+      assert.ok(link.href.startsWith('https://'), `${key}.href must be https`);
+    }
+  }
+});
+
+test('github link points to ekvlabs-team org', () => {
+  assert.ok(socialLinks.github.href.includes('ekvlabs-team'));
 });

@@ -39,13 +39,13 @@ export const publicLinks = {
   currentDay: '/data/current-day.json',
   routes: '/data/routes.json',
   trialExample: '/data/trial/example.json',
-  github: 'https://github.com/ekvlabs/genesis-grid-public',
+  github: 'https://github.com/ekvlabs-team/genesis-grid-public',
 };
 
 export const socialLinks = {
   telegram: { label: 'Telegram', href: 'https://t.me/genesisgrid_bot' },
-  github: { label: 'GitHub', href: 'https://github.com/ekvlabs/genesis-grid-public' },
-  x: { label: 'X', href: null },
+  github: { label: 'GitHub', href: 'https://github.com/ekvlabs-team/genesis-grid-public' },
+  x: { label: 'X', href: 'https://x.com/GenesisGridAI' },
   moltbook: { label: 'Moltbook', href: null },
   farcaster: { label: 'Farcaster', href: null },
 };
