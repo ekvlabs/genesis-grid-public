@@ -134,14 +134,16 @@ function normalizeGridSnapshot(snapshot = {}, fallback = {}) {
 }
 
 function withClosedDefaults(data) {
+  const grid = normalizeGridSnapshot(data.grid);
+  const phase = data.phase ?? CLOSED_PHASE;
   return {
     ...GG_DATA,
     ...data,
-    phase: data.phase ?? CLOSED_PHASE,
+    phase,
     submissionsOpen: false,
     traces: cleanArray(data.traces),
     archive: cleanArray(data.archive),
-    grid: normalizeGridSnapshot(data.grid),
+    grid: phase === CLOSED_PHASE ? { ...grid, called: [], awakened: [], ash: [] } : grid,
   };
 }
 
@@ -169,6 +171,8 @@ export function normalizeCurrentDay(payload, fallback = GG_DATA, options = {}) {
   const day = cleanInt(payload.day ?? payload.dayNumber ?? payload.day_number, fallback.day ?? 0);
   const epoch = cleanString(payload.epoch ?? payload.epochNumber ?? payload.epoch_number, fallback.epoch ?? '0');
   const canRenderPublicRecords = phase !== CLOSED_PHASE && options.allowLiveDayState === true;
+  const grid = normalizeGridSnapshot(payload.grid ?? fallback.grid);
+  const visibleGrid = canRenderPublicRecords ? grid : { ...grid, called: [], awakened: [], ash: [] };
   const traces = canRenderPublicRecords
     ? cleanArray(payload.traces)
         .map((trace) => normalizeTrace(trace, day, epoch))
@@ -191,7 +195,7 @@ export function normalizeCurrentDay(payload, fallback = GG_DATA, options = {}) {
     traces,
     archive,
     submissionsOpen: phase !== CLOSED_PHASE && options.allowLiveDayState === true && payload.submissionsOpen === true,
-    grid: normalizeGridSnapshot(payload.grid ?? fallback.grid),
+    grid: visibleGrid,
   };
 }
 

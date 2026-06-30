@@ -46,6 +46,7 @@ test('prelaunch payloads cannot open public submissions', () => {
       phase: 'prelaunch',
       traces: [{ id: 'trace-1', agentName: 'Should not render' }],
       archive: [{ day: 1, law: 'Should not render' }],
+      grid: { day: 0, totalSupply: 10000, called: [1], awakened: [2], ash: [3] },
       submissionsOpen: true,
     },
     GG_DATA,
@@ -54,6 +55,9 @@ test('prelaunch payloads cannot open public submissions', () => {
   assert.equal(data.phase, 'prelaunch');
   assert.deepEqual(data.traces, []);
   assert.deepEqual(data.archive, []);
+  assert.deepEqual(data.grid.called, []);
+  assert.deepEqual(data.grid.awakened, []);
+  assert.deepEqual(data.grid.ash, []);
   assert.equal(data.submissionsOpen, false);
 });
 
@@ -123,6 +127,33 @@ test('loadPublicData falls back to embedded data when public reads fail', async 
   assert.equal(result.data.submissionsOpen, false);
   assert.equal(result.status.source, 'embedded');
   assert.ok(result.status.errors.length >= 1);
+});
+
+test('loadPublicData keeps static prelaunch grid closed when API grid is unavailable', async () => {
+  const result = await loadPublicData({
+    apiBaseUrl: 'https://api.genesisgrid.xyz',
+    fetchImpl: async (url) => {
+      if (String(url).endsWith('/data/current-day.json')) {
+        return jsonResponse({
+          phase: 'prelaunch',
+          day: 0,
+          epoch: '0',
+          epochName: 'Before the Gate',
+          law: 'The Grid is not open yet.',
+          counters: { born: 10000, calledToday: 0, awakenedToday: 0, ashToday: 0 },
+          grid: { day: 0, totalSupply: 10000, called: [7], awakened: [8], ash: [9] },
+          submissionsOpen: false,
+        });
+      }
+      return new Response('not found', { status: 404 });
+    },
+  });
+
+  assert.equal(result.status.source, 'static');
+  assert.deepEqual(result.data.grid.called, []);
+  assert.deepEqual(result.data.grid.awakened, []);
+  assert.deepEqual(result.data.grid.ash, []);
+  assert.equal(result.data.submissionsOpen, false);
 });
 
 test('loadPublicData connects to API but keeps grid visually closed during prelaunch', async () => {
